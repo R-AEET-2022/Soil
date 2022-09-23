@@ -56,8 +56,10 @@ metro <- data %>%
 Una vez filtrados los datos, representamos las dos variables de estudio:
 
 ```{r plot, echo=FALSE}
-plot_global_BD <- plot(metro$BD_fine ~ metro$TOC )
-
+library(ggplot2)
+ggplot(metro, aes(x=TOC, y=BD_fine)) +
+  geom_point() +
+  geom_smooth()
 ```
 
 Para estudiar cómo covaría la densidad respecto a la concentración de TOC, ajustamos un modelo lineal con la función lm().
