@@ -1,8 +1,10 @@
 ---
-title: "Soil: materia orgánica vs compactación"
+title: 'Soil: materia orgánica vs compactación'
 author: "Crsitina y Laura"
 date: "`r Sys.Date()`"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
@@ -11,38 +13,53 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Datos
 
-Datos de **C orgánico total** (TOC) y **densidad del suelo** (BD) en un gradiente de profundidad. Datos publicados en https://osf.io/n8w9j/. A continuación se muestra un resumen de los datos originales.
-
-```{r}
-
-```
+Datos de **C orgánico total** (TOC) y **densidad del suelo** (BD) en un gradiente de profundidad. Datos publicados en <https://osf.io/n8w9j/>. A continuación se muestra un resumen de los datos originales.
 
 
-
-```{r summary, echo=FALSE}
+```{r data, echo=FALSE, include=FALSE}
 library(readr)
-data <- read_delim("C:/Users/laura/Downloads/data.txt", delim = "\t", escape_double = FALSE, trim_ws = TRUE)
+data <- read_delim("data_soils.txt", delim = "\t", escape_double = FALSE, trim_ws = TRUE)
 summary(data)
 data$depth <- data$`depth increment` ## simplifico el nombre de la variable depth
 plot_global <- plot(data$TOC ~ data$depth)
+```
+
+```{r summary, echo=TRUE, include=TRUE}
+summary(data)
+data$depth <- data$`depth increment` ## simplifico el nombre de la variable depth
+plot_global <- plot(data$TOC ~ data$depth)
+
 ```
 
 ## Objetivo y métodos
 
 El objetivo es ver el efecto del TOC sobre la densidad del suelo. Puesto que a partir de los 100 cm de profundidad los datos son más escasos, nos vamos a centrar en los datos correspondientes al primer metro de profundidad.
 
-```{r pressure, echo=FALSE}
+### Hipotesis: 
+La densidad del suelo disminuye con el TOC
+
+```{r pressure, echo=FALSE, include=FALSE}
 library(dplyr)
 metro <- data %>%
   filter(depth <= 100)
 
 ```
 
+
+```{r filter, echo=TRUE, include=TRUE}
+metro <- data %>%
+  filter(depth <= 100)
+
+```
+
+
 Una vez filtrados los datos, representamos las dos variables de estudio:
+
 ```{r plot, echo=FALSE}
 plot_global_BD <- plot(metro$BD_fine ~ metro$TOC )
 
 ```
+
 Para estudiar cómo covaría la densidad respecto a la concentración de TOC, ajustamos un modelo lineal con la función lm().
 
 ```{r modelo, echo=TRUE}
@@ -52,8 +69,7 @@ library(equatiomatic)
 equatiomatic::extract_eq(modelo, use_coefs = TRUE)
 hist(residuals(modelo))
 ```
-## Resultados
-El modelo lineal está centrado en 0 y puede considerarse que hay homogeneidad en la varianza. A partir de las 1372 observaciones, se observa que hay una relación negativa entre la densidad del suelo y el contenido en C orgánico. El modelo estima que cuando no hay C orgánico en el suelo, la densidad del suelo esperada sería de 1.5 g/cm3, y al aumentar en 1 unidad la densidad, disminiye el TOC en 0,12 ppm. En ambos casos el p-valor es significativo porque los valores estimados son mucho mayores que los errores asociados.
-El modelo es capaz de predecir la densidad del suelo a partir del TOC con un error de 0.17 g/cm3, y explica el 44.7% de la variación de la densidad en función del TOC.
-El p-valor del estadístico F indica que el modelo es capaz de explicar mejor la variación que un modelo nulo.
 
+## Resultados
+
+El modelo lineal está centrado en 0 y puede considerarse que hay homogeneidad en la varianza. A partir de las 1372 observaciones, se observa que hay una relación negativa entre la densidad del suelo y el contenido en C orgánico. El modelo estima que cuando no hay C orgánico en el suelo, la densidad del suelo esperada sería de 1.5 g/cm3, y al aumentar en 1 unidad la densidad, disminiye el TOC en 0,12 ppm. En ambos casos el p-valor es significativo porque los valores estimados son mucho mayores que los errores asociados. El modelo es capaz de predecir la densidad del suelo a partir del TOC con un error de 0.17 g/cm3, y explica el 44.7% de la variación de la densidad en función del TOC. El p-valor del estadístico F indica que el modelo es capaz de explicar mejor la variación que un modelo nulo.

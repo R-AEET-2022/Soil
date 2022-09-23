@@ -1,6 +1,8 @@
+library(readr)
+data <- read_delim("data_soils.txt", delim = "\t", escape_double = FALSE, trim_ws = TRUE)
 summary(data)
+data$depth <- data$`depth increment`
 
-data$depth <- data$`depth increment` ## simplifico el nombre de la variable depth
 
 plot(data$TOC ~ data$depth) ## falta de datos por debajo de 1 metro
 
@@ -18,7 +20,7 @@ profundidades <- metro %>%
     sdTOC = sd(TOC))
 
 library(ggplot2)
-ggplot(profundidades, aes(x=depth, y=meanTOC)) +
+ggplot(metro, aes(x=TOC, y=BD_fine)) +
   geom_point() +
   geom_smooth()
 
@@ -50,23 +52,7 @@ modelo2 <- lm(BD_fine ~ TOC, data = metro)
 
 summary(modelo2)
 
-# Call:
-#  lm(formula = BD_fine ~ TOC, data = metro)
-
-# Residuals:
-#      Min       1Q   Median       3Q      Max 
-# -1.14136 -0.08070  0.01929  0.10776  2.41528 
-
-# Coefficients:
-#              Estimate Std. Error t value Pr(>|t|)    
-# (Intercept)  1.549547   0.002023   766.0   <2e-16 ***
-# TOC         -0.123723   0.001203  -102.8   <2e-16 ***
-  ---
-#  Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-# Residual standard error: 0.1724 on 13070 degrees of freedom
-# (1 observation deleted due to missingness)
-# Multiple R-squared:  0.4473,	Adjusted R-squared:  0.4472 
-# F-statistic: 1.058e+04 on 1 and 13070 DF,  p-value: < 2.2e-16
 
 
+library("performance")
+check_model(modelo2)
