@@ -64,8 +64,15 @@ ggplot(metro, aes(x=TOC, y=BD_fine)) +
 
 Para estudiar cómo covaría la densidad respecto a la concentración de TOC, ajustamos un modelo lineal con la función lm().
 
-```{r modelo, echo=TRUE}
+
+```{r modelo, plot, echo=TRUE, include=TRUE}
 modelo <- lm(BD_fine ~ TOC, data = metro)
+plot(modelo)
+```
+
+
+
+```{r modelo, echo=TRUE}
 summary(modelo)
 library(equatiomatic)
 equatiomatic::extract_eq(modelo, use_coefs = TRUE)
@@ -73,5 +80,6 @@ hist(residuals(modelo))
 ```
 
 ## Resultados
+
 
 El modelo lineal está centrado en 0 y puede considerarse que hay homogeneidad en la varianza. A partir de las 1372 observaciones, se observa que hay una relación negativa entre la densidad del suelo y el contenido en C orgánico. El modelo estima que cuando no hay C orgánico en el suelo, la densidad del suelo esperada sería de 1.5 g/cm3, y al aumentar en 1 unidad la densidad, disminiye el TOC en 0,12 ppm. En ambos casos el p-valor es significativo porque los valores estimados son mucho mayores que los errores asociados. El modelo es capaz de predecir la densidad del suelo a partir del TOC con un error de 0.17 g/cm3, y explica el 44.7% de la variación de la densidad en función del TOC. El p-valor del estadístico F indica que el modelo es capaz de explicar mejor la variación que un modelo nulo.
